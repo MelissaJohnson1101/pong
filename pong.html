@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        #world {
+            width: 500px;
+            height: 500px;
+            background-color: black;
+            position: relative;
+            cursor: none;
+        }
+        
+        #paddle {
+            width: 20px;
+            height: 100px;
+            background-color: white;
+            position: absolute;
+        }
+        
+        #ball {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="world">
+        <div id="paddle"></div>
+        <div id="ball"></div>
+    </div>
+
+    <div id="scoreboard"></div>
+
+    <script>
+        /**
+        		* Make the ball bounce off the paddle
+        		* Add a computer controlled paddle for player 2
+        		* Figure out keyboard controls?
+        		* Do other weird stuff
+        			(let the paddle shoot the ball!)
+        			(allow the paddle to move in the x dir also!)
+        			(add powerups!)
+        			(whatever!)
+        			(add an obsticle!)
+        		**/
+
+        var worldElement = document.getElementById("world");
+        var paddleElement = document.getElementById("paddle");
+        var ballElement = document.getElementById("ball");
+        var display = document.getElementById("scoreboard");
+
+        var paddle = {
+            x: 20,
+            y: 200
+        };
+
+        var ball = {
+            x: 150,
+            y: 300,
+            vx: 7,
+            vy: 7
+        };
+         var score = 0;
+
+        function update() {
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            if (ball.y > 480 && ball.vy > 0) {
+                ball.vy = -ball.vy;
+            } else if (ball.y < 0 && ball.vy < 0) {
+                ball.vy = -ball.vy;
+            }
+            if (ball.x > 480 && ball.vx > 0) {
+                ball.vx = -ball.vx;
+            } else if (ball.x < 0 && ball.vx < 0) {
+                ball.vx = -ball.vx;
+            }
+        }
+
+        function collision() {
+            if (ball.x < paddle.x + 20 && ball.x > paddle.x && ball.y > paddle.y && ball.y < paddle.y + 100) {
+                ball.vx = -ball.vx;
+//                return true;
+                score = score + 1;       
+            }
+//            score = score - 1;
+            display.innerHTML = "<h3>" + score + "</h3>"
+        }
+
+        function draw() {
+            paddleElement.style.top = paddle.y + "px";
+            paddleElement.style.left = paddle.x + "px";
+
+            ballElement.style.top = ball.y + "px";
+            ballElement.style.left = ball.x + "px";
+        }
+
+        function scoring() {
+            if (collision) {
+                score = score + 1;
+            } else if (ball.x <= 0){
+                score = score - 1;
+            }
+            console.log(score);        
+        }
+    
+        function frame() {
+            update();
+            draw();
+            collision();
+//            scoring();
+        }
+
+        function updateMouse(event) {
+            paddle.y = event.y - 50;
+        }
+
+        worldElement.onmousemove = updateMouse;
+
+        setInterval(frame, 1000 / 60);
+    </script>
+</body>
+
+</html>
